@@ -15,6 +15,8 @@ input {
     padding: 10px;
     width: 70%;
     font-size: 16px;
+    border-radius: 10px;
+    border: none;
 }
 
 button.botao {
@@ -22,6 +24,7 @@ button.botao {
     font-size: 16px;
     margin-left: 10px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 ul.lista {
