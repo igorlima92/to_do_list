@@ -21,42 +21,34 @@ const input = document.querySelector('.input');
 const botao = document.querySelector('.botao');
 const lista = document.querySelector('.lista');
 
-let tarefas = []; //Array que representa a lista salva
+let tarefas = [];
 
-//Carregar tarefas salvas ao iniciar
+// Carrega tarefas ao iniciar
 carregarTarefasSalvas();
-//Eventos
+
+// ✅ Evento do botão "Adicionar"
 botao.addEventListener('click', () => {
-    const tarefa = input.value.trim();
-        if(texto !== ''){
-            adicionarTarefa(texto);
-            input.value = '';
-        }
+    const texto = input.value.trim();
+    if (texto !== '') {
+        adicionarTarefa(texto);
+        input.value = '';
+    }
+});
+
+function adicionarTarefa(texto, concluida = false) {
+    tarefas.push({ texto, concluida });
+    atualizarLista();
+    salvarTarefas();
+}
+
+function atualizarLista() {
+    lista.innerHTML = '';
+    tarefas.forEach((tarefa, index) => {
+        const item = criarElementoTarefa(tarefa, index);
+        lista.appendChild(item);
     });
+}
 
-    //---------------FUNÇÕES---------------------
-
-    //Adicionar Tarefa ao array, DOM e salva no localStorage
-
-    function adicionarTarefa(texto, concluida = false){
-        const novaTarefa = { texto, conlcuida};
-        tarefas.push(novaTarefa);
-        atualizarLista();
-        salvarTarefa();
-    }
-
-    //atualiza visualmente a Lista
-
-    function atualizaLista(){
-        lista.innerHTML = ''; //Limpa a lista
-
-        tarefas.forEach((tarefa, index) => {
-            const item = criarElementoTarefa(tarefa, index);
-            lista.appendChild(item);
-        });
-    }
-
-    // Cria um <li> com botão concluir/remover
 function criarElementoTarefa(tarefa, index) {
     const itemLista = document.createElement('li');
 
@@ -81,7 +73,7 @@ function criarElementoTarefa(tarefa, index) {
     });
 
     botaoRemover.addEventListener('click', () => {
-        tarefas.splice(index, 1); // remove do array
+        tarefas.splice(index, 1);
         salvarTarefas();
         atualizarLista();
     });
@@ -93,21 +85,14 @@ function criarElementoTarefa(tarefa, index) {
     return itemLista;
 }
 
-//Salva as tarefas no localStorage
-function salvarTarefas(){
+function salvarTarefas() {
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
 }
 
-//Carrega do localStorage ao iniciar
-function carregarTarefasSalvas(){
+function carregarTarefasSalvas() {
     const dados = localStorage.getItem('tarefas');
-    if(dados){
+    if (dados) {
         tarefas = JSON.parse(dados);
         atualizarLista();
     }
 }
-
-
-
-
-   
