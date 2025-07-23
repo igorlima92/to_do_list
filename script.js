@@ -40,7 +40,7 @@ botao.addEventListener('click', () => {
 
     function adicionarTarefa(texto, concluida = false){
         const novaTarefa = { texto, conlcuida};
-        tarefa.push(novaTarefa);
+        tarefas.push(novaTarefa);
         atualizarLista();
         salvarTarefa();
     }
