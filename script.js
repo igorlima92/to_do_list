@@ -21,44 +21,93 @@ const input = document.querySelector('.input');
 const botao = document.querySelector('.botao');
 const lista = document.querySelector('.lista');
 
+let tarefas = []; //Array que representa a lista salva
+
+//Carregar tarefas salvas ao iniciar
+carregarTarefasSalvas();
 //Eventos
-botao.addEventListener('click', function () {
-    const tarefa = input.value;
+botao.addEventListener('click', () => {
+    const tarefa = input.value.trim();
+        if(texto !== ''){
+            adicionarTarefa(texto);
+            input.value = '';
+        }
+    });
 
-    if (tarefa.trim() !== '') {//Evita adicionar tarefa vazia
-        const itemLista = document.createElement('li');
+    //---------------FUNÇÕES---------------------
 
-        //Cria um span com o texto da tarefa
-        const textoTarefa = document.createElement('span');
-        textoTarefa.textContent = tarefa;
+    //Adicionar Tarefa ao array, DOM e salva no localStorage
 
-        //cria botão CONCLUIR
-        const botaoConcluir = document.createElement('button');
-        botaoConcluir.textContent = '✔️';
-        botaoConcluir.classList.add('btn-concluir');
-
-        //Cria botao REMOVER
-        const botaoRemover = document.createElement('button')
-        botaoRemover.textContent = '🗑️';
-        botaoRemover.classList.add('btn-remover');
-
-        //Evento para riscar a tarefa
-        botaoConcluir.addEventListener('click', function () {
-            textoTarefa.classList.toggle('concluida'); //alterna a classae
-        })
-
-        //Evento para remover a Tarefa
-        botaoRemover.addEventListener('click', function () {
-            lista.removeChild(itemLista);
-        })
-
-        // ✅ Montar o <li> com os elementos criados
-        itemLista.appendChild(textoTarefa);
-        itemLista.appendChild(botaoConcluir);
-        itemLista.appendChild(botaoRemover);
-
-        lista.appendChild(itemLista);
-        input.value = '';
+    function adicionarTarefa(texto, concluida = false){
+        const novaTarefa = { texto, conlcuida};
+        tarefa.push(novaTarefa);
+        atualizarLista();
+        salvarTarefa();
     }
-});
 
+    //atualiza visualmente a Lista
+
+    function atualizaLista(){
+        lista.innerHTML = ''; //Limpa a lista
+
+        tarefas.forEach((tarefa, index) => {
+            const item = criarElementoTarefa(tarefa, index);
+            lista.appendChild(item);
+        });
+    }
+
+    // Cria um <li> com botão concluir/remover
+function criarElementoTarefa(tarefa, index) {
+    const itemLista = document.createElement('li');
+
+    const textoTarefa = document.createElement('span');
+    textoTarefa.textContent = tarefa.texto;
+    if (tarefa.concluida) {
+        textoTarefa.classList.add('concluida');
+    }
+
+    const botaoConcluir = document.createElement('button');
+    botaoConcluir.textContent = '✔️';
+    botaoConcluir.classList.add('btn-concluir');
+
+    const botaoRemover = document.createElement('button');
+    botaoRemover.textContent = '🗑️';
+    botaoRemover.classList.add('btn-remover');
+
+    botaoConcluir.addEventListener('click', () => {
+        tarefas[index].concluida = !tarefas[index].concluida;
+        salvarTarefas();
+        atualizarLista();
+    });
+
+    botaoRemover.addEventListener('click', () => {
+        tarefas.splice(index, 1); // remove do array
+        salvarTarefas();
+        atualizarLista();
+    });
+
+    itemLista.appendChild(textoTarefa);
+    itemLista.appendChild(botaoConcluir);
+    itemLista.appendChild(botaoRemover);
+
+    return itemLista;
+}
+
+//Salva as tarefas no localStorage
+function salvarTarefas(){
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+}
+
+//Carrega do localStorage ao iniciar
+function carregarTarefasSalvas(){
+    const dados = localStorage.getItem('tarefas');
+    if(dados){
+        tarefas = JSON.parse(dados);
+        atualizarLista();
+    }
+}
+
+
+
+
+   
